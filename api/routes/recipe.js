@@ -24,6 +24,7 @@ router.post("/add", function (req, res, next) {
   if (req.body.chocoid && req.body.ids && req.body.amounts) {
     const args = {
       chocoid: req.body.chocoid,
+      price: req.nbody.price,
       ids: req.body.ids,
       amounts: req.body.amounts,
     };
@@ -34,7 +35,7 @@ router.post("/add", function (req, res, next) {
     });
   } else {
     res.send(
-      "Body must include: chocoid(int), ids(array of int), amounts(array of int)."
+      "Body must include: chocoid(int), price(int), ids(array of int), amounts(array of int)."
     );
   }
 });

@@ -46,6 +46,7 @@ class Requests extends React.Component {
           var newRequest = this.state.requests;
           newRequest[i].status = "Delivered";
           this.setState({ requests: newRequest });
+          this.props.updateChoco();
         }
       })
       .catch((err) => console.log(err));
@@ -79,8 +80,10 @@ class Requests extends React.Component {
                 <TableRow>
                   <TableCell>Item</TableCell>
                   <TableCell align="center">Amount</TableCell>
+                  <TableCell align="center">Stock</TableCell>
                   <TableCell align="center">Status</TableCell>
                   <TableCell align="center">Request Date</TableCell>
+                  <TableCell align="center">Profit</TableCell>
                   <TableCell align="center">Action</TableCell>
                 </TableRow>
               </TableHead>
@@ -88,11 +91,22 @@ class Requests extends React.Component {
                 {this.state.requests.map((row, index) => (
                   <RequestItem
                     requestID={row.requestID}
+                    name={this.props.getChocoName(row.chocoID)}
                     amount={row.amount}
+                    stock={this.props.getChocoStock(row.chocoID)}
                     status={row.status}
                     requestDate={row.requestDate}
+                    profit={
+                      "Rp. " +
+                      this.props.thousandSep(
+                        this.props.getChocoPrice(row.chocoID) * row.amount
+                      )
+                    }
                     handleApprove={this.handleApprove}
                     index={index}
+                    handleProcessChoco={(amount) => {
+                      this.props.processChoco(row.chocoID, amount);
+                    }}
                   />
                 ))}
               </TableBody>

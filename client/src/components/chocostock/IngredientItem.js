@@ -9,6 +9,8 @@ export default function IngredientItem(props) {
       <TableCell component="th">{props.name}</TableCell>
       <TableCell align="center">{props.amount}</TableCell>
       <TableCell align="center">{props.stock}</TableCell>
+      <TableCell align="center">Rp. {props.price}</TableCell>
+      <TableCell align="center">{props.action}</TableCell>
     </TableRow>
   );
 }

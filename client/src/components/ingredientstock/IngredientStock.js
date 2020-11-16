@@ -35,12 +35,6 @@ class IngredientStock extends React.Component {
     });
   };
 
-  thousandSep = (price) => {
-    return price
-      ? price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
-      : "Loading...";
-  };
-
   render() {
     const classes = this.props;
     return (
@@ -52,6 +46,7 @@ class IngredientStock extends React.Component {
               <Card variant="outlined">
                 <IngredientStockHeader
                   ingredient={ingredient}
+                  name={this.props.getIngredientName(ingredient.ingredientID)}
                   index={index}
                   getIngredientName={this.props.getIngredientName}
                   handleExpandClick={this.props.handleExpandClick}
@@ -95,8 +90,8 @@ class IngredientStock extends React.Component {
                       mt={2}
                     >
                       <Typography>
-                        Price (/pcs): Rp.&nbsp;
-                        {this.thousandSep(
+                        Buy Price (/pcs): Rp.&nbsp;
+                        {this.props.thousandSep(
                           this.props.getIngredientPrice(ingredient.ingredientID)
                         )}
                       </Typography>

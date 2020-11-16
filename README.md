@@ -159,6 +159,7 @@ deletes stock of ingredient of supplied id from database (proceed with caution)
 ```
 {
   "chocoid":101,
+  "chocoid":5000,
   "ids":[1,31,59],
   "amounts":[2,5,7]
 }

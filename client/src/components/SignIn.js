@@ -70,7 +70,6 @@ export default function SignIn(props) {
           id="username"
           label="Username"
           name="username"
-          autoComplete="username"
           autoFocus
           value={username}
           onChange={(e) => setUsername(e.target.value)}
@@ -84,7 +83,6 @@ export default function SignIn(props) {
           label="Password"
           type="password"
           id="password"
-          autoComplete="current-password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />

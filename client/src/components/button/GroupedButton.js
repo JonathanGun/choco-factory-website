@@ -3,7 +3,7 @@ import Box from "@material-ui/core/Box";
 import Button from "@material-ui/core/Button";
 import ButtonGroup from "@material-ui/core/ButtonGroup";
 
-class GroupedButtons extends React.Component {
+class GroupedButton extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -16,7 +16,7 @@ class GroupedButtons extends React.Component {
   };
 
   handleDecrement = () => {
-    this.setState({ counter: Math.max(0, this.state.counter - 1) });
+    this.setState({ counter: Math.max(1, this.state.counter - 1) });
   };
 
   render() {
@@ -42,4 +42,4 @@ class GroupedButtons extends React.Component {
   }
 }
 
-export default GroupedButtons;
+export default GroupedButton;

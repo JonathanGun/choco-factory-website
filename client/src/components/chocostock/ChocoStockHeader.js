@@ -37,7 +37,7 @@ export default function ChocoStockHeader(props) {
     <CardHeader
       avatar={
         <Avatar aria-label="chocoimage" className={classes.avatar}>
-          R
+          {choco.name.charAt(0)}
         </Avatar>
       }
       action={

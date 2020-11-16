@@ -22,42 +22,84 @@ class Content extends React.Component {
       balance: "-",
       ingredientInfo: [],
       ingredients: [],
+      chocos: [],
     };
   }
 
-  getActivePage = () => {
-    switch (this.props.activePage) {
-      case 0:
-        return (
-          <ChocoStock
-            ingredientInfo={this.state.ingredientInfo}
-            getIngredientName={this.getIngredientName}
-            getIngredientStock={this.getIngredientStock}
-          />
-        );
-      case 1:
-        return (
-          <IngredientStock
-            ingredients={this.state.ingredients}
-            ingredientInfo={this.state.ingredientInfo}
-            updateIngredientInfo={this.updateIngredientInfo}
-            getIngredientName={this.getIngredientName}
-            getIngredientPrice={this.getIngredientPrice}
-            handleExpandClick={this.handleExpandClick}
-            handleDelete={this.handleDelete}
-            handleIngredientBuy={this.handleIngredientBuy}
-            updateIngredientDetail={this.updateIngredientDetail}
-            updateIngredients={this.updateIngredients}
-          />
-        );
-      case 2:
-        return <Requests />;
-      default:
-        return null;
+  // ============================================== ChocoStock
+
+  handleChocoExpandClick = (i) => {
+    var newChoco = this.state.chocos;
+    newChoco[i].expanded ^= true;
+    if (newChoco[i].expanded) {
+      if (newChoco[i].ingredients === undefined) {
+        this.updateChocoIngredients(i);
+      }
     }
+    this.setState({ chocos: newChoco });
   };
 
-  handleExpandClick = (i) => {
+  updateChocoIngredients = (i) => {
+    fetch("http://localhost:9000/recipe/" + this.state.chocos[i].chocoID)
+      .then((res) => res.text())
+      .then((res) => JSON.parse(res))
+      .then((res) => {
+        var newChoco = this.state.chocos;
+        newChoco[i].ingredients = res.return;
+        this.setState({ chocos: newChoco });
+      })
+      .catch((err) => console.log(err));
+  };
+
+  updateChoco = () => {
+    fetch("http://localhost:9000/chocostock/get")
+      .then((res) => res.text())
+      .then((res) => JSON.parse(res))
+      .then((res) => {
+        var newChocos = res.return;
+        var iUpdated = [];
+        newChocos.forEach((choco, index) => {
+          var match = this.state.chocos.filter(
+            (el) => el.chocoID === choco.chocoID
+          );
+          if (match[0] !== undefined) {
+            if (match[0].expanded) {
+              choco.expanded = match[0].expanded;
+              iUpdated.push(index);
+            }
+          }
+        });
+        this.setState({ chocos: res.return });
+        this.updateIngredients();
+        iUpdated.forEach((i) => this.updateChocoIngredients(i));
+      })
+      .catch((err) => console.log(err));
+  };
+
+  processChoco = (chocoID, amount) => {
+    fetch("http://localhost:9000/ingredientstock/process", {
+      method: "POST",
+      body: JSON.stringify({
+        chocoid: chocoID,
+        amount: amount,
+      }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((res) => res.text())
+      .then((res) => JSON.parse(res))
+      .then((res) => {
+        if (res.return) {
+          this.updateChoco();
+        }
+      })
+      .catch((err) => console.log(err));
+  };
+
+  // ============================================== IngredientStock
+
+  handleIngredientExpandClick = (i) => {
     var newIngredient = this.state.ingredients;
     newIngredient[i].expanded ^= true;
     if (newIngredient[i].expanded) {
@@ -80,9 +122,7 @@ class Content extends React.Component {
       .then((res) => JSON.parse(res))
       .then((res) => {
         if (res.return) {
-          var newIngredients = this.state.ingredients;
-          newIngredients[i].details.splice(j, 1);
-          this.setState({ ingredients: newIngredients });
+          this.updateIngredients();
         }
       })
       .catch((err) => console.log(err));
@@ -113,6 +153,68 @@ class Content extends React.Component {
       })
       .catch((err) => console.log(err));
   };
+
+  addIngredientStock = (ingredientID, amount, money) => {
+    fetch("http://localhost:9000/ingredientstock/add/" + ingredientID, {
+      method: "POST",
+      body: JSON.stringify({ amount: amount }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((res) => res.text())
+      .then((res) => JSON.parse(res))
+      .then((res) => {
+        if (res.return) {
+          this.handleNewBalance(money);
+          this.updateIngredients();
+        }
+      })
+      .catch((err) => console.log(err));
+  };
+
+  updateIngredients = () => {
+    fetch("http://localhost:9000/ingredientstock/total/")
+      .then((res) => res.text())
+      .then((res) => JSON.parse(res))
+      .then((res) => {
+        var newIngredient = res.return;
+        var idUpdated = [];
+        newIngredient.forEach((ingredient) => {
+          var match = this.state.ingredients.filter(
+            (el) => el.ingredientID === ingredient.ingredientID
+          );
+          if (match[0] !== undefined) {
+            if (match[0].expanded) {
+              ingredient.expanded = match[0].expanded;
+              idUpdated.push(match[0].ingredientID);
+            }
+          }
+        });
+        this.setState({ ingredients: res.return });
+        idUpdated.forEach((id) => this.updateIngredientDetail(id));
+      })
+      .catch((err) => console.log(err));
+  };
+
+  updateIngredientDetail = (ingredientID) => {
+    fetch("http://localhost:9000/ingredientstock/get/" + ingredientID)
+      .then((res) => res.text())
+      .then((res) => JSON.parse(res))
+      .then((res) => {
+        var newIngredient = this.state.ingredients;
+        newIngredient.forEach((ingredient) => {
+          if (ingredient.ingredientID === ingredientID) {
+            ingredient.details = res.return;
+            ingredient.expanded = true;
+          }
+        });
+        this.setState({ ingredients: newIngredient });
+      })
+      .catch((err) => console.log(err));
+  };
+
+  // ============================================== Balance
 
   handleNewBalance = (newAmount) => {
     fetch("http://localhost:9000/balance/update", {
@@ -150,52 +252,6 @@ class Content extends React.Component {
       .catch((err) => console.log(err));
   };
 
-  addIngredientStock = (ingredientID, amount, money) => {
-    fetch("http://localhost:9000/ingredientstock/add/" + ingredientID, {
-      method: "POST",
-      body: JSON.stringify({ amount: amount }),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
-      .then((res) => res.text())
-      .then((res) => JSON.parse(res))
-      .then((res) => {
-        if (res.return) {
-          this.handleNewBalance(money);
-          this.updateIngredientDetail(ingredientID);
-        }
-      })
-      .catch((err) => console.log(err));
-  };
-
-  updateIngredients = () => {
-    fetch("http://localhost:9000/ingredientstock/total/")
-      .then((res) => res.text())
-      .then((res) => JSON.parse(res))
-      .then((res) => {
-        console.log(res.return);
-        this.setState({ ingredients: res.return });
-      })
-      .catch((err) => console.log(err));
-  };
-
-  updateIngredientDetail = (ingredientID) => {
-    fetch("http://localhost:9000/ingredientstock/get/" + ingredientID)
-      .then((res) => res.text())
-      .then((res) => JSON.parse(res))
-      .then((res) => {
-        var newIngredient = this.state.ingredients;
-        newIngredient.forEach((ingredient) => {
-          if (ingredient.ingredientID === ingredientID) {
-            ingredient.details = res.return;
-          }
-        });
-        this.setState({ ingredients: newIngredient });
-      })
-      .catch((err) => console.log(err));
-  };
-
   updateBalance = () => {
     fetch("http://localhost:9000/balance/get")
       .then((res) => res.text())
@@ -204,6 +260,41 @@ class Content extends React.Component {
         this.setState({ balance: res.return });
       })
       .catch((err) => console.log(err));
+  };
+
+  // ============================================== Content
+
+  getChocoName = (chocoID) => {
+    if (this.state.chocos.length > 0) {
+      let x = this.state.chocos.filter((el) => el.chocoID === chocoID);
+      if (x[0] !== undefined) {
+        return x[0].name;
+      }
+    } else {
+      return "Choco Name";
+    }
+  };
+
+  getChocoStock = (chocoID) => {
+    if (this.state.chocos.length > 0) {
+      let x = this.state.chocos.filter((el) => el.chocoID === chocoID);
+      if (x[0] !== undefined) {
+        return x[0].amount;
+      }
+    } else {
+      return "Choco Name";
+    }
+  };
+
+  getChocoPrice = (chocoID) => {
+    if (this.state.chocos.length > 0) {
+      let x = this.state.chocos.filter((el) => el.chocoID === chocoID);
+      if (x[0] !== undefined) {
+        return x[0].price;
+      }
+    } else {
+      return "Choco Name";
+    }
   };
 
   updateIngredientInfo = () => {
@@ -255,6 +346,57 @@ class Content extends React.Component {
     }
   };
 
+  getActivePage = () => {
+    switch (this.props.activePage) {
+      case 0:
+        return (
+          <ChocoStock
+            chocos={this.state.chocos}
+            ingredientInfo={this.state.ingredientInfo}
+            handleExpandClick={this.handleChocoExpandClick}
+            getIngredientName={this.getIngredientName}
+            getIngredientStock={this.getIngredientStock}
+            getIngredientPrice={this.getIngredientPrice}
+            getChocoPrice={this.getChocoPrice}
+            updateIngredients={this.updateIngredients}
+            handleIngredientBuy={this.handleIngredientBuy}
+            updateChoco={this.updateChoco}
+            processChoco={this.processChoco}
+            thousandSep={this.thousandSep}
+          />
+        );
+      case 1:
+        return (
+          <IngredientStock
+            ingredients={this.state.ingredients}
+            ingredientInfo={this.state.ingredientInfo}
+            updateIngredientInfo={this.updateIngredientInfo}
+            getIngredientName={this.getIngredientName}
+            getIngredientPrice={this.getIngredientPrice}
+            handleExpandClick={this.handleIngredientExpandClick}
+            handleDelete={this.handleDelete}
+            handleIngredientBuy={this.handleIngredientBuy}
+            updateIngredientDetail={this.updateIngredientDetail}
+            updateIngredients={this.updateIngredients}
+            thousandSep={this.thousandSep}
+          />
+        );
+      case 2:
+        return (
+          <Requests
+            getChocoName={this.getChocoName}
+            getChocoStock={this.getChocoStock}
+            getChocoPrice={this.getChocoPrice}
+            processChoco={this.processChoco}
+            updateChoco={this.updateChoco}
+            thousandSep={this.thousandSep}
+          />
+        );
+      default:
+        return null;
+    }
+  };
+
   componentDidMount() {
     this.updateBalance();
     if (this.state.ingredients.length === 0) {
@@ -263,7 +405,16 @@ class Content extends React.Component {
     if (this.state.ingredientInfo.length === 0) {
       this.updateIngredientInfo();
     }
+    if (this.state.chocos.length === 0) {
+      this.updateChoco();
+    }
   }
+
+  thousandSep = (price) => {
+    return price
+      ? price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
+      : "Loading...";
+  };
 
   render() {
     const { classes } = this.props;

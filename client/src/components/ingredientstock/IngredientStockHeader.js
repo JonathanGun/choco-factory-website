@@ -37,7 +37,7 @@ export default function ChocoStockHeader(props) {
     <CardHeader
       avatar={
         <Avatar aria-label="ingredientimage" className={classes.avatar}>
-          R
+          {props.name && props.name.charAt(0)}
         </Avatar>
       }
       action={
@@ -56,7 +56,7 @@ export default function ChocoStockHeader(props) {
           </IconButton>
         </Box>
       }
-      title={props.getIngredientName(ingredient.ingredientID)}
+      title={props.name}
       subheader={"ID: " + ingredient.ingredientID}
       onClick={() => props.handleExpandClick(props.index)}
     />
