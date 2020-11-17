@@ -27,8 +27,11 @@ This website is split into 2 part. API / server part and client / static site pa
 Here is some website screenshots
 
 <img src="./client/screenshot/login.png" width="350px">
+
 <img src="./client/screenshot/chocostock.png" width="350px">
+
 <img src="./client/screenshot/ingredientstock.png" width="350px">
+
 <img src="./client/screenshot/request.png" width="350px">
 
 ## Author
