@@ -5,13 +5,6 @@ const fetch = require("node-fetch");
 const router = express.Router();
 
 router.get("/:id", function (req, res, next) {
-  console.log(
-    url +
-      "/" +
-      req.params.id +
-      "?price=" +
-      (req.query.price === "false" ? "false" : "true")
-  );
   fetch(
     url +
       "/" +
