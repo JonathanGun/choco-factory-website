@@ -40,6 +40,7 @@ api
 1. GET /balance
 
 > get current balance
+>
 > output: `integer`
 
 2. POST /balance/add
@@ -51,6 +52,7 @@ api
 ```
 
 > add x money to balance
+>
 > output: `boolean`
 
 3. POST /balance/update
@@ -62,6 +64,7 @@ api
 ```
 
 > update balance to x money
+>
 > output: `boolean`
 
 ### Ingredient Stock
@@ -71,6 +74,7 @@ api
 1. GET /ingredientstock/:id?notexpired=true
 
 > get ingredients stock of supplied id = ingredientID (optional: notexpired)
+>
 > output: `array of IngredientStock`
 
 ```
@@ -85,11 +89,13 @@ IngredientStock: {
 2. GET /ingredientstock/total/:id
 
 > get sum of ingredientstock of the supplied id
+>
 > output: `integer`
 
 2. GET /ingredientstock/total/
 
 > get sum of ingredientstock of all ingredients
+>
 > output: `array of {ingredientID: integer, amount: integer}`
 
 3. POST /ingredientstock/add/:ingredientID
@@ -101,6 +107,7 @@ IngredientStock: {
 ```
 
 > add stock of ingredient of the supplied id
+>
 > output: `boolean`
 
 4. POST /ingredientstock/update/:stockid
@@ -112,11 +119,13 @@ IngredientStock: {
 ```
 
 > update stock of ingredient of the supplied id
+>
 > output: `boolean`
 
 5. POST /ingredientstock/delete/:stockid
 
 > deletes stock of ingredient of supplied id from database (proceed with caution)
+>
 > output: `boolean`
 
 ### Choco Stock
@@ -126,11 +135,13 @@ IngredientStock: {
 1. GET /chocostock/:id
 
 > get stock of chocolate with supplied id
+>
 > output: `integer`
 
 2. GET /
 
 > get stock of all chocolate
+>
 > output: `list of {chocoid: integer, amount: integer}`
 
 ### Recipe
@@ -140,6 +151,7 @@ IngredientStock: {
 1. GET /recipe/:id
 
 > get recipe of a chocolate with supplied id
+>
 > output: `{chocoID: integer, ingredientID: integer, amount: integer}`
 
 2. POST /recipe/add
@@ -156,6 +168,7 @@ IngredientStock: {
 
 > add a recipe of a chocolate with id = chocoid.
 > recipe consist of array of ingredient id = ids with each amount = amounts.
+>
 > output: `integer` id
 
 ### Request
@@ -165,6 +178,7 @@ IngredientStock: {
 1. GET /request/:id
 
 > get request with supplied id
+>
 > output: `Request`
 
 ```
@@ -180,11 +194,13 @@ Request: {
 2. GET /request
 
 > get all request
+>
 > output: `array of Request`
 
 3. GET /request/status/:id
 
 > get status of a request with supplied id
+>
 > output: `String` (Pending | Delivered)
 
 4. POST /request/add
@@ -197,6 +213,7 @@ Request: {
 ```
 
 > add a new request
+>
 > output: `boolean`
 
 5. POST /request/deliver/:id
@@ -208,6 +225,7 @@ Request: {
 ```
 
 > deliver a request with supplied id
+>
 > output: `boolean`
 
 ### Ingredient
@@ -217,6 +235,7 @@ Request: {
 1. GET /ingredient/:id?price=true
 
 > get detail of ingredient of supplied id (optional: price)
+>
 > output: `Ingredient`
 
 ```
@@ -230,6 +249,7 @@ Ingredient: {
 2. GET /ingredient/?price=true
 
 > get detail of all ingredient (optional: price)
+>
 > output: `array of Ingredient`
 
 3. POST /ingredient/buy/
@@ -252,6 +272,7 @@ Ingredient: {
 ```
 
 > buy an ingredient with some money
+>
 > output: `integer` (Remaining Money | Needed Money)
 
 ### General (WIP)
@@ -261,11 +282,13 @@ Ingredient: {
 1. GET /
 
 > get all available function
+>
 > output: `array of String`
 
 2. GET /help/:methodName
 
 > get the method params by given methodName (not complete)
+>
 > output: javascript object {request:object, response:object, params: object}
 
 ## Author

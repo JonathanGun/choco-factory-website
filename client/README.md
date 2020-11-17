@@ -60,4 +60,4 @@ Static client server runs on [http://localhost:5000/](http://localhost:5000/)
 
 ## Low Fidelity Design
 
-<img src="./client/screenshot/lofi.png" width="350px">
+<img src="./client/screenshot/lofi.jpg" width="350px">
