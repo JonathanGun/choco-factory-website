@@ -27,16 +27,20 @@ This website is split into 2 part. API / server part and client / static site pa
 Here is some website screenshots
 
 Login Page
-<img src="./client/screenshot/login.png" width="350px">
+
+<img src="./client/screenshot/login.png">
 
 Choco Stock Page
-<img src="./client/screenshot/chocostock.png" width="350px">
+
+<img src="./client/screenshot/chocostock.png">
 
 Ingredient Stock Page
-<img src="./client/screenshot/ingredientstock.png" width="350px">
+
+<img src="./client/screenshot/ingredientstock.png">
 
 Requests Page
-<img src="./client/screenshot/request.png" width="350px">
+
+<img src="./client/screenshot/request.png">
 
 ## Author
 
